@@ -35,6 +35,7 @@ func SudokuRest(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	if sudoku.Length != len(sudoku.Data) {
 		log.Printf("value of the Length field doesn't match the length of the Data field")
 		w.WriteHeader(http.StatusBadRequest)
@@ -42,7 +43,19 @@ func SudokuRest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Solve the puzzle
-	data, err := solve.SolveSudoku(sudoku.Data, sudoku.MaxValue, sudoku.Length-1, autogen.RelatedElements)
+	var re *[][]int
+	for _, v := range autogen.RelatedElements {
+		if sudoku.Length == len(v) {
+			re = &v
+			break
+		}
+	}
+	if re == nil {
+		log.Printf("the size of the sudoku.Data field is unsupported")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	data, err := solve.SolveSudoku(sudoku.Data, sudoku.MaxValue, sudoku.Length-1, *re)
 	if err != nil {
 		log.Printf("error returned by solve.SolveSudoku: %v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)

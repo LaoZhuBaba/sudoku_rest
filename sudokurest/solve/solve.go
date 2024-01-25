@@ -30,14 +30,13 @@ func findCandidates(s []int, relatedElementsIndexes []int, maxValue int) (candid
 	return candidates
 }
 
-// recursiveSolve takes i as an index into  slice s of max length where related_elements
-// is a slice max length containing lists of related elements.  For in slice s, element x
-// will have related_elements[x] which must all be different from x.  Any number in the
-// range 1 - 9 which isn't on the related_element list is a possible solution candidate.
+// recursiveSolve takes i as an index into slice s of max length where related_elements
+// is a slice containing lists of related elements.  For each element x in slice s there is
+// a corresponding list: related_elements[x], the elements of which must all be different from
+// s[x].  Any number in the range 1 to maxValue which isn't in the related_element list is a
+// possible solution candidate.
 func recursiveSolve(i int, s []int, maxValue int, maxIndex int, relatedElements [][]int) bool {
-	// start at i and skip ahead past elements which already have a number in the range 1 - 9.
-	// fmt.Printf("recursiveSolve() called with i: %d maxValue: %d maxIndex: %d, s: %v\n", i, maxValue, maxIndex, s)
-	// fmt.Printf("relatedElements: %v\n", relatedElements)
+	// start at i and skip ahead past elements which already have a number in the range 1 to maxValue.
 	count := i
 	for s[count] != 0 {
 		if count >= maxIndex {

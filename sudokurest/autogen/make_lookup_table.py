@@ -1,64 +1,49 @@
-row_lookup: tuple[tuple] = (
-    (0, 1, 2, 3, 4, 5, 6, 7, 8),
-    (9, 10, 11, 12, 13, 14, 15, 16, 17),
-    (18, 19, 20, 21, 22, 23, 24, 25, 26),
-    (27, 28, 29, 30, 31, 32, 33, 34, 35),
-    (36, 37, 38, 39, 40, 41, 42, 43, 44),
-    (45, 46, 47, 48, 49, 50, 51, 52, 53),
-    (54, 55, 56, 57, 58, 59, 60, 61, 62),
-    (63, 64, 65, 66, 67, 68, 69, 70, 71),
-    (72, 73, 74, 75, 76, 77, 78, 79, 80),
-)
+def make_row_lookup(n: int) -> list[list[int]]:
+    return [[x + y for y in range(n**2)] for x in range(0, n**4, n**2)]
 
-col_lookup: tuple[tuple] = (
-    (0, 9, 18, 27, 36, 45, 54, 63, 72),
-    (1, 10, 19, 28, 37, 46, 55, 64, 73),
-    (2, 11, 20, 29, 38, 47, 56, 65, 74),
-    (3, 12, 21, 30, 39, 48, 57, 66, 75),
-    (4, 13, 22, 31, 40, 49, 58, 67, 76),
-    (5, 14, 23, 32, 41, 50, 59, 68, 77),
-    (6, 15, 24, 33, 42, 51, 60, 69, 78),
-    (7, 16, 25, 34, 43, 52, 61, 70, 79),
-    (8, 17, 26, 35, 44, 53, 62, 71, 80),
-)
 
-cel_lookup: tuple[tuple] = (
-    (0, 1, 2, 9, 10, 11, 18, 19, 20),
-    (3, 4, 5, 12, 13, 14, 21, 22, 23),
-    (6, 7, 8, 15, 16, 17, 24, 25, 26),
-    (27, 28, 29, 36, 37, 38, 45, 46, 47),
-    (30, 31, 32, 39, 40, 41, 48, 49, 50),
-    (33, 34, 35, 42, 43, 44, 51, 52, 53),
-    (54, 55, 56, 63, 64, 65, 72, 73, 74),
-    (57, 58, 59, 66, 67, 68, 75, 76, 77),
-    (60, 61, 62, 69, 70, 71, 78, 79, 80),
-)
+def make_col_lookup(n: int) -> list[list[int]]:
+    return [[x + y for y in range(0, n**4, n**2)] for x in range(n**2)]
+
+
+def make_cel_lookup(n: int) -> list[list[int]]:
+    return [
+        [((z // n) * n**2) + (z % n) + (y * n) + (x * n**3) for z in range(n**2)]
+        for x in range(n)
+        for y in range(n)
+    ]
 
 
 def main() -> None:
     print("package autogen\n")
-    print("// auto-generated lookup table\n\n")
-    print("var RelatedElements = [][]int{")
-    for n in range(81):
-        row_element: int = n // 9
-        col_element: int = n % 9
-        cel_element: int = (((n // 27)) * 3) + ((n % 9) // 3)
-        # print(n)
-        # print(" ", row_element)
-        # print(" ", col_element)
-        # print(" ", cel_element)
-        related: list = list(
-            set(
-                row_lookup[row_element]
-                + col_lookup[col_element]
-                + cel_lookup[cel_element]
+    print("// auto-generated lookup table\n")
+    print(
+        "var RelatedElements = [][][]int{RelatedElements2, RelatedElements3, RelatedElements4}\n"
+    )
+    for sz in [2, 3, 4]:
+        row_lookup = make_row_lookup(sz)
+        col_lookup = make_col_lookup(sz)
+        cel_lookup = make_cel_lookup(sz)
+
+        # We have to concatenate here because you can't have curly braces within a format string
+        print(f"var RelatedElements{sz} = [][]int" + "{")
+
+        for n in range(sz**4):
+            row_element: int = n // sz**2
+            col_element: int = n % sz**2
+            cel_element: int = (((n // sz**3)) * sz) + ((n % sz**2) // sz)
+            related: list = list(
+                set(
+                    row_lookup[row_element]
+                    + col_lookup[col_element]
+                    + cel_lookup[cel_element]
+                )
             )
-        )
-        related.remove(n)
-        related.sort()
-        related_str: str = "  { " + ", ".join(str(x) for x in related) + " },"
-        print(related_str)
-    print("}\n")
+            related.remove(n)
+            related.sort()
+            related_str: str = "\t{" + ", ".join(str(x) for x in related) + "},"
+            print(related_str)
+        print("}\n")
 
 
 if __name__ == "__main__":

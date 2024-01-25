@@ -250,7 +250,7 @@ func Test_SolveSudoku(t *testing.T) {
 				},
 				maxValue:        9,
 				maxIndex:        80,
-				relatedElements: autogen.RelatedElements,
+				relatedElements: autogen.RelatedElements3,
 			},
 			want: []int{
 				4, 8, 3, 9, 2, 1, 6, 5, 7,
@@ -327,7 +327,7 @@ func Test_SolveSudoku(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := SolveSudoku(tt.args.s, tt.args.maxValue, tt.args.maxIndex, autogen.RelatedElements)
+			got, err := SolveSudoku(tt.args.s, tt.args.maxValue, tt.args.maxIndex, autogen.RelatedElements3)
 			if err != nil {
 				t.Errorf("err = %v, want %v", err, nil)
 			}
