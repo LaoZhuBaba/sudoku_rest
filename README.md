@@ -11,3 +11,5 @@ Three examples in a raw format are in samples.txt.  These are from https://proje
 The code is in the sudokurest directory with a Makefile which provides targets for deploying to GCP, running locally, running tests, etc.
 
 "make deploy" just runs gcf-deploy.sh.  This deploys a Cloud Function to your currently configured GCP project.  Or you can specify by adding --project=project_name 
+
+Test the REST interface either locally or the GCF with: "make test_local" and "make test_gcf".  For local testing you need to start the local server first.
