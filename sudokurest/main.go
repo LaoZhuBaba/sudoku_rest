@@ -1,7 +1,6 @@
 package sudokurest
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -18,7 +17,7 @@ func init() {
 }
 
 func SudokuRest(w http.ResponseWriter, r *http.Request) {
-	log.Printf("top of the function")
+	log.Printf("request received")
 
 	// Read message body
 	bodyBytes, err := io.ReadAll(r.Body)
@@ -74,7 +73,8 @@ func SudokuRest(w http.ResponseWriter, r *http.Request) {
 		log.Printf("error returned by solve.SolveSudoku: %v\n", err)
 		return
 	}
+	w.Header().Set("content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-
-	fmt.Fprintf(w, "%s", string(jsonResult))
+	b, err := w.Write(jsonResult)
+	log.Printf("ResponseWriter.Write() returned: %d bytes with error: %v", b, err)
 }
